@@ -1,43 +1,23 @@
-﻿#nullable disable
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shopping2.Data2;
 using Shopping2.Data2.Entities;
 
 namespace Shopping2.Controllers
 {
-    public class Country2Controller : Controller
+    public class CategoriesController : Controller
     {
         private readonly DataContext2 _context2;
 
-        public Country2Controller(DataContext2 context)
+        public CategoriesController(DataContext2 context2)
         {
-            _context2 = context;
+            _context2 = context2;
         }
-
         public async Task<IActionResult> Index()
         {
-            return View(await _context2.Countries.ToListAsync());
-                     
+            return View(await _context2.Categories.ToListAsync());
+
         }
-
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context2.Countries == null)
-            {
-                return NotFound();
-            }
-
-            Country2 country2 = await _context2.Countries
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (country2 == null)
-            {
-                return NotFound();
-            }
-
-            return View(country2);
-        }
-
         public IActionResult Create()
         {
             return View();
@@ -45,13 +25,13 @@ namespace Shopping2.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Country2 country2)
+        public async Task<IActionResult> Create(Category category)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context2.Add(country2);
+                    _context2.Add(category);
                     await _context2.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
@@ -59,7 +39,7 @@ namespace Shopping2.Controllers
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "Ya existe un país con el mismo nombre.");
+                        ModelState.AddModelError(string.Empty, "Ya existe una categoría con el mismo nombre.");
                     }
                     else
                     {
@@ -71,11 +51,11 @@ namespace Shopping2.Controllers
                     ModelState.AddModelError(string.Empty, exception.Message);
                 }
             }
-            
-            return View(country2);
+
+            return View(category);
 
         }
-
+        
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context2.Countries == null)
@@ -83,20 +63,20 @@ namespace Shopping2.Controllers
                 return NotFound();
             }
 
-            Country2 country2 = await _context2.Countries.FindAsync(id);
-            if (country2 == null)
+            Category category = await _context2.Categories.FindAsync(id);
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return View(country2);
+            return View(category);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Country2 country2)
+        public async Task<IActionResult> Edit(int id, Category category)
         {
-            if (id != country2.Id)
+            if (id != category.Id)
             {
                 return NotFound();
             }
@@ -105,14 +85,14 @@ namespace Shopping2.Controllers
             {
                 try
                 {
-                    _context2.Update(country2);
+                    _context2.Update(category);
                     await _context2.SaveChangesAsync();
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "Ya existe un país con el mismo nombre.");
+                        ModelState.AddModelError(string.Empty, "Ya existe una categoría con el mismo nombre.");
                     }
                     else
                     {
@@ -126,9 +106,25 @@ namespace Shopping2.Controllers
 
             }
 
-            return View(country2);
+            return View(category);
         }
+        
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null || _context2.Countries == null)
+            {
+                return NotFound();
+            }
 
+            Category category = await _context2.Categories.FindAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            return View(category);
+        }
+        
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context2.Countries == null)
@@ -136,22 +132,21 @@ namespace Shopping2.Controllers
                 return NotFound();
             }
 
-           Country2 country2 = await _context2.Countries.FindAsync(id);
-            if (country2 == null)
+            Category category = await _context2.Categories.FindAsync(id);
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return View(country2);
+            return View(category);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-        
-            Country2 country2 = await _context2.Countries.FindAsync(id);
-            _context2.Countries.Remove(country2);
+            Category category = await _context2.Categories.FindAsync(id);
+            _context2.Categories.Remove(category);
             await _context2.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

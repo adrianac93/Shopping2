@@ -9,11 +9,14 @@ namespace Shopping2.Data2
         {
         }
 
+        public DbSet<Category> Categories { get; set; }
+
         public DbSet<Country2> Countries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Category>().HasIndex(c => c.Name).IsUnique();
             modelBuilder.Entity<Country2>().HasIndex(c => c.Name).IsUnique();
         }
     }
